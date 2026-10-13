@@ -78,6 +78,9 @@
   .bar{width:100%;height:100%;border-radius:2px 2px 0 0}
   .bar.f{background:linear-gradient(180deg,var(--flavio-2),var(--flavio))}
   .bar.l{background:linear-gradient(180deg,var(--lula-2),var(--lula))}
+  /* rodada com base diferente de "votos válidos": barra hachurada + rótulo da base em destaque */
+  .grp.outra .bar{opacity:.5;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.65) 0 3px,rgba(0,0,0,0) 3px 7px)}
+  .grp.outra .xlab .mono{color:#8a6113;font-weight:700}
   .val{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 4px);font-size:.68rem;font-weight:700;white-space:nowrap}
   .val.f{color:var(--flavio)}
   .val.l{color:var(--lula)}
@@ -142,7 +145,7 @@
       </div>
     </div>
     <p class="avg" id="avg"></p>
-    <p class="chartnote">Barras em <b>votos válidos</b> quando a fonte informa os dois números (PoderData, Datafolha, AtlasIntel, Ipespe, DataTrends); o Vox Brasil divulgou só os <b>totais</b> (com indecisos), e por isso aparece marcado como base diferente — é o único com Lula numericamente à frente. A Quaest de 12/10 não entra no gráfico: foi recorte estadual do DF, não rodada nacional. Comparação só é legítima entre rodadas do mesmo instituto.</p>
+    <p class="chartnote">Barras em <b>votos válidos</b> quando a fonte informa os dois números (PoderData, Datafolha, AtlasIntel, Ipespe, DataTrends); o Vox Brasil divulgou só os <b>totais</b> (com indecisos). A base usada está impressa sob cada barra e as rodadas de <b>outra base</b> — inclusive as marcadas <code>fonte-espelho</code>, incluídas automaticamente pelo watchdog com os números da fonte-espelho (Wikipédia, seção do 2º turno), que não distingue válidos de totais — aparecem com a barra <b>hachurada</b> e ficam <b>fora da média</b> até serem conferidas no instituto. A Quaest de 12/10 não entra no gráfico: foi recorte estadual do DF, não rodada nacional. Comparação só é legítima entre rodadas do mesmo instituto.</p>
   </section>
 
   <div class="filters" id="filters">
@@ -165,7 +168,7 @@
 
   <footer>
     <p><b>Fontes:</b> registros do PesqEle/TSE citados pela imprensa (BBC News Brasil, Exame, aRede, DCI, G1, UOL, Veja, Valor, Poder360), a lista consolidada da Wikipédia e o calendário do Overdrive para as pesquisas do 2º turno. Consulta oficial: <a href="https://www.tse.jus.br/eleicoes/pesquisa-eleitorais/consulta-as-pesquisas-registradas">PesqEle — TSE</a>.</p>
-    <p>Painel estático gerado pelo Hermes em 12/10/2026 a partir de dados públicos. O painel não se regera sozinho, mas um watchdog confere o calendário (Wikipédia + Overdrive) de 2 em 2 horas e avisa no Telegram assim que uma rodada nova aparecer ou mudar de data/valor.</p>
+    <p>Painel gerado pelo Hermes em 12/10/2026 a partir de dados públicos. <b>Republicação automática:</b> o watchdog do calendário (Wikipédia, seção do 2º turno + calendário do Overdrive, de 2 em 2 horas) regenera e republica este painel assim que uma rodada nova é divulgada ou um valor muda — no Vercel e no GitHub Pages —, conferindo por <code>sha1</code> o arquivo que está no ar. Rodadas que entram por essa via usam os números da fonte-espelho e vêm marcadas no cartão com a base <code>fonte-espelho</code>: ficam fora da média de votos válidos do gráfico até serem conferidas no instituto. Código: <code>007_CONHECIMENTO/Outputs/&lt;data&gt;_calendario_pesquisas_2turno_presidente.gerar.py</code> (dados) e <code>~/.hermes/scripts/pesquisas_2turno_publicar.py</code> (publicação verificada).</p>
   </footer>
 </main>
 
@@ -209,7 +212,8 @@ function renderBarras(){
   var passo = 100/ n;
   comValor.forEach(function(p, i){
     var cx = passo*(i+0.5);
-    var grupo = '<div class="grp" style="left:'+cx+'%">'+
+    var outra = (p.base!=='válidos') ? ' outra' : '';   // base diferente da de votos válidos: barra hachurada
+    var grupo = '<div class="grp'+outra+'" style="left:'+cx+'%">'+
       '<div class="col"><div class="bwrap f" style="height:'+p.fav+'%">'+
         '<span class="val f">'+num(p.fav)+'%</span><div class="bar f"></div></div></div>'+
       '<div class="col"><div class="bwrap l" style="height:'+p.lul+'%">'+
@@ -224,9 +228,12 @@ function renderBarras(){
   if(val.length){
     var mf = val.reduce(function(s,p){return s+p.fav;},0)/val.length;
     var ml = val.reduce(function(s,p){return s+p.lul;},0)/val.length;
+    var fora = comValor.length - val.length;
     el.innerHTML = 'Média das '+val.length+' rodadas em votos válidos: '+
       '<b class="f">Flávio '+num(mf)+'%</b> × <b class="l">Lula '+num(ml)+'%</b>'+
-      ' — margem de erro entre 1 e 2,6 p.p., ou seja, vantagem dentro de uma faixa que exige cautela.';
+      ' — margem de erro entre 1 e 2,6 p.p., ou seja, vantagem dentro de uma faixa que exige cautela.'+
+      (fora ? ' <span class="mono">('+fora+' rodada'+(fora>1?'s':'')+' com outra base, hachurada'+
+               (fora>1?'s':'')+', fora da média)</span>' : '');
   } else {
     el.innerHTML = 'Nenhuma rodada com votos válidos divulgados até agora.';
   }
