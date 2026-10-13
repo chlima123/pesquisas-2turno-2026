@@ -9,6 +9,7 @@
     --navy:#0E2A33; --navy-2:#16414e; --lat:#B98A2F; --lat-2:#d8a94a;
     --papel:#F6F4EE; --papel-2:#efece2; --ink:#1b1b1b; --ink-2:#4a4a44;
     --ok:#1f7d5c; --warn:#a1701a; --pend:#8a8a80; --line:#d9d4c4;
+    --flavio:#1d4f9c; --flavio-2:#3d74c4; --lula:#c0122d; --lula-2:#d94b61;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--papel);color:var(--ink);
@@ -48,6 +49,45 @@
   .badge.done{background:#e2f1ea;color:#0f5b41}
   .badge.sched{background:#f7eccd;color:#7a5a10}
   .badge.pend{background:#eeeeea;color:#57574f}
+  .vchip{display:inline-block;border-radius:2px;padding:1px 6px;font-weight:700;font-size:.8em;color:#fff}
+  .vchip.f{background:var(--flavio)}
+  .vchip.l{background:var(--lula)}
+
+  /* ---------- barras verticais ---------- */
+  .chart{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy);padding:16px 18px 14px;margin:22px 0 6px}
+  .chart-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  .chart-head h2{margin:0;font-size:1.12rem}
+  .chart-head p{margin:4px 0 0;color:var(--ink-2);font-size:.83rem}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.84rem;color:var(--ink-2)}
+  .legend span b{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px}
+  .legend .f b{background:var(--flavio)}
+  .legend .l b{background:var(--lula)}
+  .chart-scroll{overflow-x:auto;padding-bottom:54px}
+  .plot{position:relative;height:250px;margin:26px 0 0;border-bottom:2px solid var(--navy);min-width:720px}
+  .grid{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+  .grid i{position:absolute;left:0;right:0;border-top:1px dashed var(--line)}
+  .grid i b{position:absolute;left:0;top:-9px;background:#fff;padding:0 4px;color:var(--ink-2);
+    font-weight:400;font-size:.62rem;font-style:normal}
+  .grid i.half{border-top:1px solid var(--lat)}
+  .grid i.half b{color:#8a6113;font-weight:700}
+  .grp{position:absolute;bottom:0;height:100%;display:flex;align-items:flex-end;gap:7px;transform:translateX(-50%)}
+  .col{position:relative;height:100%;display:flex;align-items:flex-end}
+  .bwrap{position:relative;width:26px;background:#f2efe6}
+  .bwrap.f{background:#eef2fa}
+  .bwrap.l{background:#fbeeee}
+  .bar{width:100%;height:100%;border-radius:2px 2px 0 0}
+  .bar.f{background:linear-gradient(180deg,var(--flavio-2),var(--flavio))}
+  .bar.l{background:linear-gradient(180deg,var(--lula-2),var(--lula))}
+  .val{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 4px);font-size:.68rem;font-weight:700;white-space:nowrap}
+  .val.f{color:var(--flavio)}
+  .val.l{color:var(--lula)}
+  .xlab{position:absolute;bottom:-46px;left:50%;transform:translateX(-50%);width:104px;text-align:center;
+    font-size:.72rem;color:var(--ink-2);line-height:1.25}
+  .xlab b{display:block;color:var(--ink);font-weight:600}
+  .avg{margin:14px 0 0;border-top:1px solid var(--line);padding-top:10px;font-size:.85rem;color:var(--ink-2)}
+  .avg b.f{color:var(--flavio)} .avg b.l{color:var(--lula)}
+  .chartnote{margin:8px 0 0;font-size:.78rem;color:var(--ink-2)}
+
   .proj{border-top:2px solid var(--lat);margin-top:34px;padding-top:14px}
   .proj .item{background:var(--papel-2);border:1px dashed var(--line);padding:12px 14px;margin:0 0 10px}
   .proj .item h3{margin:0;font-size:1rem}
@@ -65,6 +105,12 @@
     .kpi{border:1px solid #000}
     .card{page-break-inside:avoid;border:1px solid #000;border-left-width:4px}
     .proj .item{border:1px solid #000;background:#fff}
+    .chart{page-break-inside:avoid;border:1px solid #000;border-top-width:3px}
+    .chart-scroll{overflow:visible}
+    .plot{min-width:0!important}
+    .bar,.vchip,.legend span b,.bwrap{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .bar.f{background:var(--flavio)!important}
+    .bar.l{background:var(--lula)!important}
   }
 </style>
 </head>
@@ -79,6 +125,26 @@
 <div class="kpis" id="kpis"></div>
 
 <main>
+  <section class="chart">
+    <div class="chart-head">
+      <div>
+        <h2>Valores das rodadas já divulgadas — Lula × Flávio</h2>
+        <p>Cada grupo é uma pesquisa nacional do 2º turno. Escala de 0 a 100% (sem eixo cortado).</p>
+      </div>
+      <div class="legend">
+        <span class="f"><b></b>Flávio Bolsonaro (PL)</span>
+        <span class="l"><b></b>Lula (PT)</span>
+      </div>
+    </div>
+    <div class="chart-scroll">
+      <div class="plot" id="plot">
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
+    <p class="avg" id="avg"></p>
+    <p class="chartnote">Barras em <b>votos válidos</b> quando a fonte informa os dois números (PoderData, Datafolha, AtlasIntel, Ipespe, DataTrends); o Vox Brasil divulgou só os <b>totais</b> (com indecisos), e por isso aparece marcado como base diferente — é o único com Lula numericamente à frente. A Quaest de 12/10 não entra no gráfico: foi recorte estadual do DF, não rodada nacional. Comparação só é legítima entre rodadas do mesmo instituto.</p>
+  </section>
+
   <div class="filters" id="filters">
     <button class="chip on" data-f="todos">Todas (17)</button>
     <button class="chip" data-f="divulgada">Já divulgadas</button>
@@ -98,13 +164,13 @@
   </div>
 
   <footer>
-    <p><b>Fontes:</b> registros do PesqEle/TSE citados pela imprensa (BBC News Brasil, Exame, aRede, DCI, G1, UOL, Veja, Valor, Poder360) e a lista consolidada da Wikipédia para as pesquisas do 2º turno. Consulta oficial: <a href="https://www.tse.jus.br/eleicoes/pesquisa-eleitorais/consulta-as-pesquisas-registradas">PesqEle — TSE</a>.</p>
-    <p>Painel estático gerado pelo Hermes em 12/10/2026 a partir de dados públicos. Não atualiza sozinho: novas rodadas da última semana exigem nova coleta.</p>
+    <p><b>Fontes:</b> registros do PesqEle/TSE citados pela imprensa (BBC News Brasil, Exame, aRede, DCI, G1, UOL, Veja, Valor, Poder360), a lista consolidada da Wikipédia e o calendário do Overdrive para as pesquisas do 2º turno. Consulta oficial: <a href="https://www.tse.jus.br/eleicoes/pesquisa-eleitorais/consulta-as-pesquisas-registradas">PesqEle — TSE</a>.</p>
+    <p>Painel estático gerado pelo Hermes em 12/10/2026 a partir de dados públicos. O painel não se regera sozinho, mas um watchdog confere o calendário (Wikipédia + Overdrive) de 2 em 2 horas e avisa no Telegram assim que uma rodada nova aparecer ou mudar de data/valor.</p>
   </footer>
 </main>
 
 <script>
-var DADOS = [{"data": "2026-10-08", "rot": "qui 08/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "05–07/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-08134/2026", "status": "divulgada", "result": "Válidos: Flávio 53% × Lula 47%", "nota": "Primeira pesquisa nacional do 2º turno. Rejeição: Flávio 43%, Lula 46%."}, {"data": "2026-10-08", "rot": "qui 08/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "06–08/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-02949/2026", "status": "divulgada", "result": "Totais: Flávio 49% × Lula 45% — válidos: 52% × 48%", "nota": "Empate técnico no limite da margem; instituto vê maior probabilidade de Flávio à frente."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "AtlasIntel", "contratante": "Bloomberg", "campo": "03–08/10", "amostra": "5.026", "metodo": "internet (recrutamento digital)", "me": "1 p.p.", "registro": "BR-03663/2026", "status": "divulgada", "result": "Totais: Flávio 51,1% × Lula 45,7% — válidos: 52,8% × 47,2%", "nota": "Parte da coleta é anterior ao 1º turno (começou em 3/10)."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "05–07/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,1 p.p.", "registro": "BR-09623/2026", "status": "divulgada", "result": "Totais: Lula 44,2% × Flávio 42,7%", "nota": "Único da 1ª semana com Lula numericamente à frente."}, {"data": "2026-10-10", "rot": "sáb 10/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "06–08/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "BR-00933/2026", "status": "divulgada", "result": "Válidos: Flávio 52,7% × Lula 47,3%", "nota": "Tracking semanal: uma rodada por semana até a véspera."}, {"data": "2026-10-11", "rot": "dom 11/10", "instituto": "DataTrends", "contratante": "próprio instituto", "campo": "07–09/10", "amostra": "2.000", "metodo": "telefone", "me": "2,19 p.p.", "registro": "—", "status": "divulgada", "result": "Válidos: Flávio 53,1% × Lula 46,9%", "nota": ""}, {"data": "2026-10-12", "rot": "seg 12/10", "instituto": "Quaest (DF) · PoderData (AM)", "contratante": "Globo / Poder360", "campo": "08–11/10", "amostra": "1.104 / 1.200", "metodo": "presencial / telefone", "me": "3 p.p.", "registro": "DF-08737/2026", "status": "divulgada", "result": "Recortes estaduais (não são pesquisas nacionais)", "nota": "Quaest no DF p/ presidente: Flávio 50% × Lula 40%. A nacional da Quaest sai em 14/10."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Nexus/BTG Pactual", "contratante": "BTG Pactual", "campo": "10–12/10", "amostra": "2.000", "metodo": "telefone", "me": "2 p.p.", "registro": "BR-07997/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "10–12/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-01209/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Rodada semanal do instituto (a do dia 8 foi a primeira do 2º turno)."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Instituto Futura", "contratante": "—", "campo": "07–10/10", "amostra": "2.000", "metodo": "telefone", "me": "2,2 p.p.", "registro": "BR-00650/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Gerp", "contratante": "próprio instituto", "campo": "—", "amostra": "—", "metodo": "—", "me": "—", "registro": "BR-07877/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Registro indicado pela Exame; confirmação de publicação depende do instituto."}, {"data": "2026-10-14", "rot": "qua 14/10", "instituto": "Quaest", "contratante": "Globo / O Globo", "campo": "10–13/10", "amostra": "2.154", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-08729/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "1ª pesquisa nacional da Quaest no 2º turno; mede também expectativa de vitória e temor político."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "13–15/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-00466/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Mede se o voto em cada candidato é por apoio ou por rejeição ao adversário."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Palver", "contratante": "—", "campo": "10–14/10", "amostra": "5.000", "metodo": "questionário online", "me": "3 p.p.", "registro": "BR-08028/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Maior amostra da semana."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "13–15/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC; o PoderData publica em cadência semanal."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "13–15/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,15 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC."}, {"data": "2026-10-17", "rot": "sáb 17/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "13–15/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "2ª rodada do tracking semanal do Ipespe."}];
+var DADOS = [{"data": "2026-10-08", "rot": "qui 08/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "05–07/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-08134/2026", "status": "divulgada", "fav": 53.0, "lul": 47.0, "base": "válidos", "result": "Válidos: Flávio 53% × Lula 47%", "nota": "Primeira pesquisa nacional do 2º turno. Rejeição: Flávio 43%, Lula 46%."}, {"data": "2026-10-08", "rot": "qui 08/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "06–08/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-02949/2026", "status": "divulgada", "fav": 52.0, "lul": 48.0, "base": "válidos", "result": "Totais: Flávio 49% × Lula 45% — válidos: 52% × 48%", "nota": "Empate técnico no limite da margem; instituto vê maior probabilidade de Flávio à frente."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "AtlasIntel", "contratante": "Bloomberg", "campo": "03–08/10", "amostra": "5.026", "metodo": "internet (recrutamento digital)", "me": "1 p.p.", "registro": "BR-03663/2026", "status": "divulgada", "fav": 52.8, "lul": 47.2, "base": "válidos", "result": "Totais: Flávio 51,1% × Lula 45,7% — válidos: 52,8% × 47,2%", "nota": "Parte da coleta é anterior ao 1º turno (começou em 3/10)."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "05–07/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,1 p.p.", "registro": "BR-09623/2026", "status": "divulgada", "fav": 42.7, "lul": 44.2, "base": "totais", "result": "Totais: Lula 44,2% × Flávio 42,7%", "nota": "Único da 1ª semana com Lula numericamente à frente; divulgou só os totais (sem válidos)."}, {"data": "2026-10-10", "rot": "sáb 10/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "06–08/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "BR-00933/2026", "status": "divulgada", "fav": 52.7, "lul": 47.3, "base": "válidos", "result": "Válidos: Flávio 52,7% × Lula 47,3%", "nota": "Tracking semanal: uma rodada por semana até a véspera."}, {"data": "2026-10-11", "rot": "dom 11/10", "instituto": "DataTrends", "contratante": "próprio instituto", "campo": "07–09/10", "amostra": "2.000", "metodo": "telefone", "me": "2,19 p.p.", "registro": "BR-03576/2026", "status": "divulgada", "fav": 53.1, "lul": 46.9, "base": "válidos", "result": "Válidos: Flávio 53,1% × Lula 46,9%", "nota": "Registro BR-03576/2026 (o levantamento ainda não aparecia no PesqEle na 1ª coleta)."}, {"data": "2026-10-12", "rot": "seg 12/10", "instituto": "Quaest (DF) · PoderData (AM)", "contratante": "Globo / Poder360", "campo": "08–11/10", "amostra": "1.104 / 1.200", "metodo": "presencial / telefone", "me": "3 p.p.", "registro": "DF-08737/2026", "status": "divulgada", "fav": null, "lul": null, "base": null, "result": "Recortes estaduais (não são pesquisas nacionais)", "nota": "Quaest no DF p/ presidente: Flávio 50% × Lula 40%. A nacional da Quaest sai em 14/10. Fora do gráfico: não é rodada nacional."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Nexus/BTG Pactual", "contratante": "BTG Pactual", "campo": "10–12/10", "amostra": "2.000", "metodo": "telefone", "me": "2 p.p.", "registro": "BR-07997/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "10–12/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-01209/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Rodada semanal do instituto (a do dia 8 foi a primeira do 2º turno)."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Instituto Futura", "contratante": "—", "campo": "07–10/10", "amostra": "2.000", "metodo": "telefone", "me": "2,2 p.p.", "registro": "BR-00650/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Gerp", "contratante": "próprio instituto", "campo": "—", "amostra": "—", "metodo": "—", "me": "—", "registro": "BR-07877/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Registro indicado pela Exame; confirmação de publicação depende do instituto."}, {"data": "2026-10-14", "rot": "qua 14/10", "instituto": "Quaest", "contratante": "Globo / O Globo", "campo": "10–13/10", "amostra": "2.154", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-08729/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "1ª pesquisa nacional da Quaest no 2º turno; mede também expectativa de vitória e temor político."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "13–15/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-00466/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Mede se o voto em cada candidato é por apoio ou por rejeição ao adversário."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Palver", "contratante": "—", "campo": "10–14/10", "amostra": "5.000", "metodo": "questionário online", "me": "3 p.p.", "registro": "BR-08028/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Maior amostra da semana."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "13–15/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC; o PoderData publica em cadência semanal."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "13–15/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,15 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC."}, {"data": "2026-10-17", "rot": "sáb 17/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "13–15/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "2ª rodada do tracking semanal do Ipespe."}];
 var PROJ = [{"data": "2026-10-18", "rot": "dom 18/10", "titulo": "Debate na Band (20h)", "texto": "Primeiro debate do 2º turno (Band/Estadão, com TV Cultura, Gazeta e Jovem Pan). Pesquisas costumam ser registradas com campo logo após o debate."}, {"data": "2026-10-19", "rot": "seg 19/10", "titulo": "Janela de registro aberta", "texto": "A partir daqui já é possível registrar pesquisas com divulgação em 24/10 (último dia útil antes da votação). Esperar a enxurrada de registros da última semana no PesqEle."}, {"data": "2026-10-20", "rot": "ter 20/10", "titulo": "Rodadas semanais (esperado)", "texto": "PoderData/Aya e Nexus/BTG publicam em cadência semanal; Ipespe e DataTrends também fazem rodadas finais. Datas dependem do registro de cada instituto."}, {"data": "2026-10-21", "rot": "qua 21/10", "titulo": "Quaest / AtlasIntel (esperado)", "texto": "A Quaest costuma fazer uma rodada final na última semana do 2º turno; a AtlasIntel publica semanalmente às sextas."}, {"data": "2026-10-22", "rot": "qui 22/10", "titulo": "Último dia de comícios e de impulsionamento pago", "texto": "Marco legal da campanha: a partir daqui só resta propaganda permitida por lei. Data-limite para comícios e propaganda paga/impulsionada na internet."}, {"data": "2026-10-23", "rot": "sex 23/10", "titulo": "Último debate (Globo, após o Jornal Nacional)", "texto": "Último dia para propaganda gratuita em rádio e TV, anúncios na imprensa escrita e debates. Bloco de pesquisas de véspera costuma sair neste fim de semana."}, {"data": "2026-10-24", "rot": "sáb 24/10", "titulo": "Véspera: bloco final de pesquisas", "texto": "É o dia tradicional dos levantamentos de véspera (Datafolha, Quaest, PoderData, Ipespe, AtlasIntel). Só é divulgado o que estiver registrado até 19/10."}, {"data": "2026-10-25", "rot": "dom 25/10", "titulo": "Votação do 2º turno", "texto": "2º turno presidencial. Levantamentos feitos no dia da eleição (boca de urna) só podem ser divulgados a partir das 17h (horário de Brasília) — em 2026 os institutos não fizeram boca de urna no 1º turno."}];
 
 var ORDEM = {divulgada:0, agendada:1};
@@ -124,6 +190,47 @@ function renderKpis(){
     kpi(sched,'agendados / registrados') + kpi(inst.size,'institutos') + kpi('25/10','data da votação');
 }
 function kpi(v,l){ return '<div class="kpi"><b>'+v+'</b><span>'+l+'</span></div>'; }
+
+/* ---------------- barras verticais ---------------- */
+function num(v){ var s = (Math.round(v*10)/10).toFixed(1); return (s.slice(-2)==='.0' ? s.slice(0,s.length-2) : s).replace('.',','); }
+
+function renderBarras(){
+  var comValor = DADOS.filter(function(p){ return p.fav!=null && p.lul!=null; });
+  var grid = document.getElementById('grid');
+  var g = '';
+  [0,20,40,50,60,80,100].forEach(function(v){
+    if(v===0) return;
+    g += '<i class="'+(v===50?'half':'')+'" style="bottom:'+v+'%"><b>'+(v===50?'50% · maioria':v+'%')+'</b></i>';
+  });
+  grid.innerHTML = g;
+
+  var plot = document.getElementById('plot');
+  var n = comValor.length;
+  var passo = 100/ n;
+  comValor.forEach(function(p, i){
+    var cx = passo*(i+0.5);
+    var grupo = '<div class="grp" style="left:'+cx+'%">'+
+      '<div class="col"><div class="bwrap f" style="height:'+p.fav+'%">'+
+        '<span class="val f">'+num(p.fav)+'%</span><div class="bar f"></div></div></div>'+
+      '<div class="col"><div class="bwrap l" style="height:'+p.lul+'%">'+
+        '<span class="val l">'+num(p.lul)+'%</span><div class="bar l"></div></div></div>'+
+      '<div class="xlab"><b>'+p.rot+'</b>'+p.instituto+'<br><span class="mono">'+p.base+'</span></div>'+
+      '</div>';
+    plot.insertAdjacentHTML('beforeend', grupo);
+  });
+
+  var val = comValor.filter(function(p){return p.base==='válidos';});
+  var el = document.getElementById('avg');
+  if(val.length){
+    var mf = val.reduce(function(s,p){return s+p.fav;},0)/val.length;
+    var ml = val.reduce(function(s,p){return s+p.lul;},0)/val.length;
+    el.innerHTML = 'Média das '+val.length+' rodadas em votos válidos: '+
+      '<b class="f">Flávio '+num(mf)+'%</b> × <b class="l">Lula '+num(ml)+'%</b>'+
+      ' — margem de erro entre 1 e 2,6 p.p., ou seja, vantagem dentro de uma faixa que exige cautela.';
+  } else {
+    el.innerHTML = 'Nenhuma rodada com votos válidos divulgados até agora.';
+  }
+}
 
 function render(filtro){
   var filtroAtual = filtro || 'todos';
@@ -168,7 +275,7 @@ document.getElementById('filters').addEventListener('click', function(e){
   render(b.getAttribute('data-f'));
 });
 
-renderKpis(); render('todos'); renderProj();
+renderKpis(); renderBarras(); render('todos'); renderProj();
 </script>
 </body>
 </html>
