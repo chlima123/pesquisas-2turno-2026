@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendário de pesquisas — 2º turno presidencial 2026</title>
+<style>
+  :root{
+    --navy:#0E2A33; --navy-2:#16414e; --lat:#B98A2F; --lat-2:#d8a94a;
+    --papel:#F6F4EE; --papel-2:#efece2; --ink:#1b1b1b; --ink-2:#4a4a44;
+    --ok:#1f7d5c; --warn:#a1701a; --pend:#8a8a80; --line:#d9d4c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--papel);color:var(--ink);
+    font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;line-height:1.55}
+  h1,h2,h3,.disp{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;font-weight:600;letter-spacing:-.01em}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em}
+  header.top{background:var(--navy);color:#f3efe6;padding:30px 26px 24px;position:relative;border-bottom:4px solid var(--lat)}
+  header.top .eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lat-2);margin:0 0 8px}
+  header.top h1{margin:0;font-size:clamp(1.5rem,3.4vw,2.3rem)}
+  header.top .sub{margin:10px 0 0;color:#cfd6d3;max-width:70ch;font-size:.95rem}
+  .print-btn{position:absolute;top:24px;right:26px;background:var(--lat);color:#1c1200;border:0;border-radius:3px;
+    padding:9px 13px;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer}
+  .print-btn:hover{background:var(--lat-2)}
+  .kpis{display:flex;flex-wrap:wrap;gap:12px;margin:20px 26px 0}
+  .kpi{background:#fff;border:1px solid var(--line);border-left:4px solid var(--lat);padding:12px 16px;min-width:150px;flex:1 1 150px}
+  .kpi b{display:block;font-family:"Iowan Old Style",Georgia,serif;font-size:1.6rem;line-height:1.1}
+  .kpi span{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+  main{max-width:1080px;margin:0 auto;padding:22px 26px 60px}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 22px}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--ink-2);border-radius:999px;padding:7px 14px;
+    font:inherit;font-size:.85rem;cursor:pointer}
+  .chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .day{border-top:2px solid var(--navy);padding-top:14px;margin-top:26px}
+  .day h2{margin:0 0 2px;font-size:1.15rem}
+  .day .hint{margin:0 0 12px;color:var(--ink-2);font-size:.86rem}
+  .card{background:#fff;border:1px solid var(--line);border-left:4px solid var(--lat);padding:14px 16px;margin:0 0 10px;
+    display:grid;grid-template-columns:1fr auto;gap:6px 18px}
+  .card.done{border-left-color:var(--ok)}
+  .card.pend{border-left-color:var(--pend)}
+  .card h3{margin:0;font-size:1.04rem}
+  .card .who{margin:2px 0 0;color:var(--ink-2);font-size:.84rem}
+  .card .res{margin:8px 0 0;font-size:.95rem}
+  .card .nota{margin:6px 0 0;color:var(--ink-2);font-size:.83rem}
+  .meta{grid-row:1 / span 3;text-align:right;font-size:.78rem;color:var(--ink-2);white-space:nowrap}
+  .badge{display:inline-block;border-radius:2px;padding:3px 8px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+  .badge.done{background:#e2f1ea;color:#0f5b41}
+  .badge.sched{background:#f7eccd;color:#7a5a10}
+  .badge.pend{background:#eeeeea;color:#57574f}
+  .proj{border-top:2px solid var(--lat);margin-top:34px;padding-top:14px}
+  .proj .item{background:var(--papel-2);border:1px dashed var(--line);padding:12px 14px;margin:0 0 10px}
+  .proj .item h3{margin:0;font-size:1rem}
+  .proj .item p{margin:6px 0 0;font-size:.88rem;color:var(--ink-2)}
+  .warn{background:#fff8e6;border:1px solid #e6d5a4;border-left:4px solid var(--warn);padding:12px 15px;margin:18px 0;font-size:.9rem}
+  footer{border-top:1px solid var(--line);margin-top:34px;padding-top:16px;color:var(--ink-2);font-size:.82rem}
+  footer a{color:var(--navy-2)}
+  @media print{
+    @page{size:A4 portrait;margin:12mm}
+    body{background:#fff;color:#000;font-size:11pt}
+    .print-btn,.filters{display:none!important}
+    header.top{background:#fff;color:#000;border-bottom:2px solid #000;padding:0 0 10px}
+    header.top .eyebrow{color:#000}
+    header.top .sub{color:#333}
+    .kpi{border:1px solid #000}
+    .card{page-break-inside:avoid;border:1px solid #000;border-left-width:4px}
+    .proj .item{border:1px solid #000;background:#fff}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="print-btn" onclick="window.print()">🖨️ Imprimir / PDF</button>
+  <p class="eyebrow">Eleições 2026 · 2º turno · Presidência</p>
+  <h1>Calendário das pesquisas — Lula × Flávio Bolsonaro</h1>
+  <p class="sub">Divulgação de pesquisas presidenciais no segundo turno, do fim do 1º turno (4/10) até a votação (25/10). Toda pesquisa de conhecimento público precisa de registro no PesqEle do TSE <b>até 5 dias antes</b> da divulgação — por isso a agenda da última semana só é conhecida quase em cima da hora. Situação em <b>12/10/2026, 21h</b>.</p>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<main>
+  <div class="filters" id="filters">
+    <button class="chip on" data-f="todos">Todas (17)</button>
+    <button class="chip" data-f="divulgada">Já divulgadas</button>
+    <button class="chip" data-f="agendada">Agendadas</button>
+  </div>
+
+  <div id="timeline"></div>
+
+  <section class="proj">
+    <h2>Última semana (18 a 24/10) — o que ainda não está fechado</h2>
+    <p class="hint">Nada aqui está confirmado por registro até 12/10: é a cadência dos institutos cruzada com o calendário eleitoral. Confirme no PesqEle antes de usar como data certa.</p>
+    <div id="proj"></div>
+  </section>
+
+  <div class="warn">
+    <b>Como ler a agenda.</b> A data indicada no PesqEle é a data <i>a partir da qual</i> o resultado pode ser divulgado — o instituto ou o contratante pode decidir não publicar. Pesquisa registrada não é pesquisa divulgada, e pesquisa não é previsão: é retrato do período de campo. A comparação mais segura é sempre entre rodadas do mesmo instituto.
+  </div>
+
+  <footer>
+    <p><b>Fontes:</b> registros do PesqEle/TSE citados pela imprensa (BBC News Brasil, Exame, aRede, DCI, G1, UOL, Veja, Valor, Poder360) e a lista consolidada da Wikipédia para as pesquisas do 2º turno. Consulta oficial: <a href="https://www.tse.jus.br/eleicoes/pesquisa-eleitorais/consulta-as-pesquisas-registradas">PesqEle — TSE</a>.</p>
+    <p>Painel estático gerado pelo Hermes em 12/10/2026 a partir de dados públicos. Não atualiza sozinho: novas rodadas da última semana exigem nova coleta.</p>
+  </footer>
+</main>
+
+<script>
+var DADOS = [{"data": "2026-10-08", "rot": "qui 08/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "05–07/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-08134/2026", "status": "divulgada", "result": "Válidos: Flávio 53% × Lula 47%", "nota": "Primeira pesquisa nacional do 2º turno. Rejeição: Flávio 43%, Lula 46%."}, {"data": "2026-10-08", "rot": "qui 08/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "06–08/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-02949/2026", "status": "divulgada", "result": "Totais: Flávio 49% × Lula 45% — válidos: 52% × 48%", "nota": "Empate técnico no limite da margem; instituto vê maior probabilidade de Flávio à frente."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "AtlasIntel", "contratante": "Bloomberg", "campo": "03–08/10", "amostra": "5.026", "metodo": "internet (recrutamento digital)", "me": "1 p.p.", "registro": "BR-03663/2026", "status": "divulgada", "result": "Totais: Flávio 51,1% × Lula 45,7% — válidos: 52,8% × 47,2%", "nota": "Parte da coleta é anterior ao 1º turno (começou em 3/10)."}, {"data": "2026-10-09", "rot": "sex 09/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "05–07/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,1 p.p.", "registro": "BR-09623/2026", "status": "divulgada", "result": "Totais: Lula 44,2% × Flávio 42,7%", "nota": "Único da 1ª semana com Lula numericamente à frente."}, {"data": "2026-10-10", "rot": "sáb 10/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "06–08/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "BR-00933/2026", "status": "divulgada", "result": "Válidos: Flávio 52,7% × Lula 47,3%", "nota": "Tracking semanal: uma rodada por semana até a véspera."}, {"data": "2026-10-11", "rot": "dom 11/10", "instituto": "DataTrends", "contratante": "próprio instituto", "campo": "07–09/10", "amostra": "2.000", "metodo": "telefone", "me": "2,19 p.p.", "registro": "—", "status": "divulgada", "result": "Válidos: Flávio 53,1% × Lula 46,9%", "nota": ""}, {"data": "2026-10-12", "rot": "seg 12/10", "instituto": "Quaest (DF) · PoderData (AM)", "contratante": "Globo / Poder360", "campo": "08–11/10", "amostra": "1.104 / 1.200", "metodo": "presencial / telefone", "me": "3 p.p.", "registro": "DF-08737/2026", "status": "divulgada", "result": "Recortes estaduais (não são pesquisas nacionais)", "nota": "Quaest no DF p/ presidente: Flávio 50% × Lula 40%. A nacional da Quaest sai em 14/10."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Nexus/BTG Pactual", "contratante": "BTG Pactual", "campo": "10–12/10", "amostra": "2.000", "metodo": "telefone", "me": "2 p.p.", "registro": "BR-07997/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "10–12/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "BR-01209/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Rodada semanal do instituto (a do dia 8 foi a primeira do 2º turno)."}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Instituto Futura", "contratante": "—", "campo": "07–10/10", "amostra": "2.000", "metodo": "telefone", "me": "2,2 p.p.", "registro": "BR-00650/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": ""}, {"data": "2026-10-13", "rot": "ter 13/10", "instituto": "Gerp", "contratante": "próprio instituto", "campo": "—", "amostra": "—", "metodo": "—", "me": "—", "registro": "BR-07877/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Registro indicado pela Exame; confirmação de publicação depende do instituto."}, {"data": "2026-10-14", "rot": "qua 14/10", "instituto": "Quaest", "contratante": "Globo / O Globo", "campo": "10–13/10", "amostra": "2.154", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-08729/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "1ª pesquisa nacional da Quaest no 2º turno; mede também expectativa de vitória e temor político."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Datafolha", "contratante": "Folha de S.Paulo", "campo": "13–15/10", "amostra": "2.520", "metodo": "presencial", "me": "2 p.p.", "registro": "BR-00466/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Mede se o voto em cada candidato é por apoio ou por rejeição ao adversário."}, {"data": "2026-10-15", "rot": "qui 15/10", "instituto": "Palver", "contratante": "—", "campo": "10–14/10", "amostra": "5.000", "metodo": "questionário online", "me": "3 p.p.", "registro": "BR-08028/2026", "status": "agendada", "result": "Aguardando divulgação", "nota": "Maior amostra da semana."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "PoderData/Aya", "contratante": "Poder360", "campo": "13–15/10", "amostra": "3.000", "metodo": "telefone", "me": "1,8 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC; o PoderData publica em cadência semanal."}, {"data": "2026-10-16", "rot": "sex 16/10", "instituto": "Vox Brasil", "contratante": "próprio instituto", "campo": "13–15/10", "amostra": "2.100", "metodo": "presencial domiciliar", "me": "2,15 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "Data indicada pela BBC."}, {"data": "2026-10-17", "rot": "sáb 17/10", "instituto": "Ipespe/Abrapel", "contratante": "tracking da campanha", "campo": "13–15/10", "amostra": "1.500", "metodo": "telefone", "me": "2,6 p.p.", "registro": "—", "status": "agendada", "result": "Aguardando divulgação", "nota": "2ª rodada do tracking semanal do Ipespe."}];
+var PROJ = [{"data": "2026-10-18", "rot": "dom 18/10", "titulo": "Debate na Band (20h)", "texto": "Primeiro debate do 2º turno (Band/Estadão, com TV Cultura, Gazeta e Jovem Pan). Pesquisas costumam ser registradas com campo logo após o debate."}, {"data": "2026-10-19", "rot": "seg 19/10", "titulo": "Janela de registro aberta", "texto": "A partir daqui já é possível registrar pesquisas com divulgação em 24/10 (último dia útil antes da votação). Esperar a enxurrada de registros da última semana no PesqEle."}, {"data": "2026-10-20", "rot": "ter 20/10", "titulo": "Rodadas semanais (esperado)", "texto": "PoderData/Aya e Nexus/BTG publicam em cadência semanal; Ipespe e DataTrends também fazem rodadas finais. Datas dependem do registro de cada instituto."}, {"data": "2026-10-21", "rot": "qua 21/10", "titulo": "Quaest / AtlasIntel (esperado)", "texto": "A Quaest costuma fazer uma rodada final na última semana do 2º turno; a AtlasIntel publica semanalmente às sextas."}, {"data": "2026-10-22", "rot": "qui 22/10", "titulo": "Último dia de comícios e de impulsionamento pago", "texto": "Marco legal da campanha: a partir daqui só resta propaganda permitida por lei. Data-limite para comícios e propaganda paga/impulsionada na internet."}, {"data": "2026-10-23", "rot": "sex 23/10", "titulo": "Último debate (Globo, após o Jornal Nacional)", "texto": "Último dia para propaganda gratuita em rádio e TV, anúncios na imprensa escrita e debates. Bloco de pesquisas de véspera costuma sair neste fim de semana."}, {"data": "2026-10-24", "rot": "sáb 24/10", "titulo": "Véspera: bloco final de pesquisas", "texto": "É o dia tradicional dos levantamentos de véspera (Datafolha, Quaest, PoderData, Ipespe, AtlasIntel). Só é divulgado o que estiver registrado até 19/10."}, {"data": "2026-10-25", "rot": "dom 25/10", "titulo": "Votação do 2º turno", "texto": "2º turno presidencial. Levantamentos feitos no dia da eleição (boca de urna) só podem ser divulgados a partir das 17h (horário de Brasília) — em 2026 os institutos não fizeram boca de urna no 1º turno."}];
+
+var ORDEM = {divulgada:0, agendada:1};
+
+function badge(s){
+  if(s==='divulgada') return '<span class="badge done">divulgada</span>';
+  if(s==='agendada')  return '<span class="badge sched">agendada</span>';
+  return '<span class="badge pend">a confirmar</span>';
+}
+function renderKpis(){
+  var total = DADOS.length;
+  var done  = DADOS.filter(function(p){return p.status==='divulgada';}).length;
+  var sched = DADOS.filter(function(p){return p.status==='agendada';}).length;
+  var inst  = new Set(DADOS.map(function(p){return p.instituto.split(' ')[0];}));
+  document.getElementById('kpis').innerHTML =
+    kpi(total,'levantamentos mapeados') + kpi(done,'já divulgados') +
+    kpi(sched,'agendados / registrados') + kpi(inst.size,'institutos') + kpi('25/10','data da votação');
+}
+function kpi(v,l){ return '<div class="kpi"><b>'+v+'</b><span>'+l+'</span></div>'; }
+
+function render(filtro){
+  var filtroAtual = filtro || 'todos';
+  var lista = DADOS.filter(function(p){ return filtroAtual==='todos' || p.status===filtroAtual; });
+  var dias = [];
+  lista.forEach(function(p){ if(dias.indexOf(p.data)<0) dias.push(p.data); });
+  dias.sort();
+  var html = '';
+  dias.forEach(function(d){
+    var doDia = lista.filter(function(p){return p.data===d;});
+    html += '<section class="day"><h2>'+doDia[0].rot+'</h2>'+
+            '<p class="hint">'+plural(doDia.length)+'</p>';
+    doDia.forEach(function(p){
+      var cls = p.status==='divulgada' ? 'done' : (p.status==='agendada' ? '' : 'pend');
+      html += '<article class="card '+cls+'">'+
+        '<div><h3>'+p.instituto+' '+badge(p.status)+'</h3>'+
+        '<p class="who">'+p.contratante+' · campo '+p.campo+' · '+p.amostra+' entrevistas · '+p.metodo+'</p>'+
+        '<p class="res">'+p.result+'</p>'+
+        (p.nota ? '<p class="nota">'+p.nota+'</p>' : '')+
+        '</div>'+
+        '<div class="meta mono">'+p.registro+'<br>ME '+p.me+'</div>'+
+        '</article>';
+    });
+    html += '</section>';
+  });
+  document.getElementById('timeline').innerHTML = html || '<p>Nada nesta seleção.</p>';
+}
+function plural(n){ return n===1 ? '1 levantamento' : n+' levantamentos'; }
+
+function renderProj(){
+  var h = '';
+  PROJ.forEach(function(x){
+    h += '<div class="item"><h3>'+x.rot+' — '+x.titulo+'</h3><p>'+x.texto+'</p></div>';
+  });
+  document.getElementById('proj').innerHTML = h;
+}
+
+document.getElementById('filters').addEventListener('click', function(e){
+  var b = e.target.closest('.chip'); if(!b) return;
+  Array.prototype.forEach.call(this.querySelectorAll('.chip'), function(c){ c.classList.remove('on'); });
+  b.classList.add('on');
+  render(b.getAttribute('data-f'));
+});
+
+renderKpis(); render('todos'); renderProj();
+</script>
+</body>
+</html>
