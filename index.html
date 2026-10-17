@@ -261,6 +261,7 @@ var ACCD = [
  {nome:"Indexa", busca:"indexa", erro:7.8, dizia:"Lula +5,9", lider:"l", grau:5, letra:"E"}
 ];
 function semAc(s){ return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
+function numErro(v){ return (Math.round(v*10)/10).toFixed(1).replace(".",","); }
 function accDe(nome){
   var n = semAc(nome);
   for(var i=0;i<ACCD.length;i++){ if(n.indexOf(ACCD[i].busca)>=0) return ACCD[i]; }
@@ -270,10 +271,10 @@ function accChip(nome){
   if(semAc(nome).indexOf("\u00b7")>=0) return ' <span class="accchip ck0" title="Recorte estadual, n\u00e3o rodada nacional: a tabela de assertividade do 1\u00ba turno s\u00f3 cobre rodadas nacionais.">1\u00baT \u00b7 recorte estadual</span>';
   var a = accDe(nome);
   if(!a) return ' <span class="accchip ck0" title="A compilação do 1º turno não traz rodada deste instituto: sem classificação.">1ºT · s/ dado</span>';
-  var t = '1º turno — dizia '+a.dizia+' · erro na diferença '+num(a.erro)+' p.p. (a urna deu Flávio +1,9). '+
+  var t = '1º turno — dizia '+a.dizia+' · erro na diferença '+numErro(a.erro)+' p.p. (a urna deu Flávio +1,9). '+
           (a.lider==='f' ? 'Acertou o líder.' : 'Não identificou quem estava na frente.')+
           ' Grau '+a.letra+' (faixa definida por este painel).'+(a.nota ? ' Detalhe: '+a.nota+'.' : '');
-  return ' <span class="accchip ck'+a.grau+'" title="'+t+'">1ºT · '+a.letra+' · '+num(a.erro)+'</span>';
+  return ' <span class="accchip ck'+a.grau+'" title="'+t+'">1ºT · '+a.letra+' · '+numErro(a.erro)+'</span>';
 }
 function renderAcc(){
   var h = '<div class="acc-row hd"><span>Instituto</span><span>Erro na diferença (p.p.)</span>'+
@@ -283,7 +284,7 @@ function renderAcc(){
     h += '<div class="acc-row">'+
       '<span class="nm">'+a.nome+'</span>'+
       '<span class="barw"><i class="'+(a.lider==='f'?'y':'')+'" style="width:'+w.toFixed(1)+'%"></i></span>'+
-      '<span class="er">'+num(a.erro)+'</span>'+
+      '<span class="er">'+numErro(a.erro)+'</span>'+
       '<span class="dg"><span class="grau g'+a.grau+'">'+a.letra+'</span>'+
         (a.lider==='f' ? 'acertou o líder' : 'errou o líder')+' · dizia <b>'+a.dizia+'</b>'+
         (a.nota ? ' <span class="mono">('+a.nota+')</span>' : '')+'</span>'+
