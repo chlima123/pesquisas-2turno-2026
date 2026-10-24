@@ -175,7 +175,7 @@
       </div>
     </div>
     <p class="avg" id="avg"></p>
-    <p class="chartnote">Barras em <b>votos válidos</b> quando a fonte informa os dois números (PoderData, Datafolha, AtlasIntel, Ipespe, DataTrends, Nexus/BTG, Gerp, Quaest a partir de 21/10, Futura, Real Time Big Data, Veritá e CNT/MDA); Palver, Vox Brasil e a Quaest das rodadas anteriores divulgaram só os <b>totais</b>. A base usada está impressa sob cada barra e as rodadas de <b>outra base</b> — inclusive as marcadas <code>fonte-espelho</code>, incluídas automaticamente pelo watchdog (Wikipédia, seção do 2º turno), que não distingue válidos de totais — aparecem com a barra <b>hachurada</b> e ficam <b>fora da média</b> até serem conferidas no instituto. Quando a mesma pesquisa aparece duas vezes (cartão conferido + linha da fonte-espelho com outro período de campo), vale o cartão conferido. A Quaest de 12/10 é recorte estadual do DF e não entra. A rodada de <b>19/10 do Nexus/BTG</b> está na <b>espontânea</b> — também fora da média. Comparação só é legítima entre rodadas do mesmo instituto <i>e da mesma pergunta</i>.</p>
+    <p class="chartnote">Barras em <b>votos válidos</b> quando a fonte informa os dois números (PoderData, Datafolha, AtlasIntel, Ipespe, DataTrends, Nexus/BTG, Gerp, Quaest a partir de 21/10, Futura, Real Time Big Data, Veritá e CNT/MDA); Palver, Vox Brasil e a Quaest das rodadas anteriores divulgaram só os <b>totais</b>. A base usada está impressa sob cada barra e as rodadas de <b>outra base</b> — inclusive as marcadas <code>fonte-espelho</code>, incluídas automaticamente pelo watchdog (Wikipédia, seção do 2º turno), que não distingue válidos de totais — aparecem com a barra <b>hachurada</b> e ficam <b>fora da média</b> até serem conferidas no instituto. Quando a mesma pesquisa aparece duas vezes (cartão conferido + linha da fonte-espelho com outro período de campo), vale o cartão conferido. A Quaest de 12/10 é recorte estadual do DF e não entra. A rodada de <b>19/10 do Nexus/BTG</b> está na <b>espontânea</b> — também fora da média. Comparação só é legítima entre rodadas do mesmo instituto <i>e da mesma pergunta</i>. O gráfico abre na rodada mais recente — arraste para a esquerda para ver a série desde 08/10.</p>
   </section>
 
   <section class="acc">
@@ -362,6 +362,8 @@ function renderBarras(){
   } else {
     el.innerHTML = 'Nenhuma rodada com votos válidos divulgados até agora.';
   }
+  var sc = document.querySelector('.chart-scroll');      // abre na rodada mais recente
+  if(sc){ sc.scrollLeft = sc.scrollWidth; }
 }
 
 function render(filtro){
